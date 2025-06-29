@@ -3,7 +3,12 @@ import numpy as np
 from typing import Optional
 
 class WindyGridWorld(gym.Env):
-    def __init__(self, rows: int, columns: int, *, init_location: np.ndarray= None):
+    def __init__(self, 
+                 rows: int, 
+                 columns: int, 
+                 *, 
+                 init_location: np.ndarray= None, 
+                 king_move: bool=False):
         super(WindyGridWorld, self).__init__()
 
         self.rows = rows
@@ -22,13 +27,29 @@ class WindyGridWorld(gym.Env):
             }
         )
 
-        self.action_space = gym.spaces.Discrete(4)
-        self.action_to_direction = {
-            0: np.array([1, 0]), # down
-            1: np.array([0, 1]), # right
-            2: np.array([-1, 0]), # up
-            3: np.array([0, -1]) # left
-        }
+        if not king_move:
+            self.action_space = gym.spaces.Discrete(4)
+        else:
+            self.action_space = gym.spaces.Discrete(8)
+
+        if not king_move:
+            self.action_to_direction = {
+                0: np.array([1, 0]), # down
+                1: np.array([0, 1]), # right
+                2: np.array([-1, 0]), # up
+                3: np.array([0, -1]) # left
+            }
+        else:
+            self.action_to_direction = {
+                0: np.array([1, 0]), # down
+                1: np.array([0, 1]), # right
+                2: np.array([-1, 0]), # up
+                3: np.array([0, -1]), # left
+                4: np.array([1, 1]), # down-right
+                5: np.array([1, -1]), # down-left
+                6: np.array([-1, 1]), # up-right
+                7: np.array([-1, -1]), # up-left
+            }
 
     def _get_obs(self):
         return {'agent': self.current_location, 'target': self.target_location}
