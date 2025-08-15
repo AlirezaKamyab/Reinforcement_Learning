@@ -62,7 +62,7 @@ class DynaQMaze(gym.Env):
             obs['target'] = np.array(self.target_location, dtype=np.int32)
         
         self.observation = obs
-        return obs
+        return obs['agent']
     
 
     def step(self, action:int):
@@ -99,7 +99,7 @@ class DynaQMaze(gym.Env):
         if np.all(new_state == target):
             reward = self.target_reward
 
-        return self.observation, reward, terminated
+        return self.observation['agent'], reward, terminated, None, None
 
         
 def draw_maze(env: DynaQMaze):
